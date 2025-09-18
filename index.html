@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        #showData{
+            display: flex;
+            
+        }
+        #showData div{
+            /* height: 150px; */
+            width: 400px;
+            background-color: chartreuse;
+            padding: 20px;
+            margin: 10px;
+            outline: 2px solid rgb(185, 83, 19);
+            border-radius: 15px;
+        }
+        #showData div h1{
+            color: rgb(185, 9, 9);
+        }
+        #showData div h2{
+            color: rgb(34, 94, 143);
+        }
+        #showData div p{
+            color: rgb(0, 0, 0);
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>GET</h1>
+    <button onclick="fetchData()">Fetch Data</button>
+    <div id="showData">
+        
+    </div>
+
+    <h1>POST</h1>
+    <form id="postForm">
+        <input type="number" id="postId" required placeholder="Enter Id"> <br><br>
+        <input type="text" id="postName" required placeholder="Enter Name"> <br><br>
+        <input type="email" id="postEmail" required placeholder="Enter Email"> <br><br>
+        <input type="text" id="postImageURL" required placeholder="Enter Image URL"> <br><br>
+        <button type="submit">Post Data</button>
+    </form>
+
+    <script>
+        async function fetchData(){
+            const response = await fetch("http://localhost:3000/users")
+            const datas = await response.json()
+            const showData = document.querySelector("#showData")
+
+            for(let data of datas){
+                let newDiv = document.createElement("div")
+                newDiv.innerHTML = `<p>${data.id}</p>
+                                    <img src="${data.ImageURL}" height="100px" alt="image">
+                                    <h1>${data.name}</h1>
+                                    <h2>${data.email}</h2>
+                                    `
+                showData.appendChild(newDiv)
+            }
+        }
+
+        let postForm = document.querySelector("#postForm");
+        postForm.addEventListener("submit",(e)=>{
+            e.preventDefault()
+            let id = document.querySelector("#postId").value
+            let name = document.querySelector("#postName").value.trim()
+            let email = document.querySelector("#postEmail").value.trim()
+            let ImageURL = document.querySelector("#postImageURL").value
+            if(!id||!name||!email||!ImageURL)return
+            let newData = {id,name,email,ImageURL}
+            
+
+            async function postData() {
+                const response = await fetch("http://localhost:3000/users",{
+                    method:"POST",
+                    headers:{"content-type":"application/json"},
+                    body:JSON.stringify(newData)
+                })
+                postForm.reset()
+            }
+            postData()
+        })
+
+    </script>
+</body>
+</html>
