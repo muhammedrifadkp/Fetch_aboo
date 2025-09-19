@@ -47,7 +47,22 @@
         <button type="submit">Post Data</button>
     </form>
 
+    <h1>PUT</h1>
+    <form id="putForm">
+        <input type="number" id="updateId" required placeholder="Enter old Id"><br><br>
+        <input type="text" id="putName" required placeholder="Enter new Name"><br><br>
+        <input type="email" id="putEmail" required placeholder="Enter new Email"><br><br>
+        <input type="text" id="putImageURL" required placeholder="Enter new image URL"><br><br>
+        <button type="submit">update data</button>
+    </form>
+
+    <h1>DELETE</h1>
+    <input type="number" id="deleteId">
+    <button onclick="deleteData()">DELETE data</button>
+
     <script>
+
+        // Data fetch GET
         async function fetchData(){
             const response = await fetch("http://localhost:3000/users")
             const datas = await response.json()
@@ -64,6 +79,7 @@
             }
         }
 
+        // Data POST
         let postForm = document.querySelector("#postForm");
         postForm.addEventListener("submit",(e)=>{
             e.preventDefault()
@@ -85,6 +101,45 @@
             }
             postData()
         })
+
+        // Data PUT
+        let putForm = document.querySelector("#putForm")
+        putForm.addEventListener("submit",(e)=>{
+            e.preventDefault()
+
+            let id = document.querySelector("#updateId").value
+            let name = document.querySelector("#putName").value.trim()
+            let email = document.querySelector("#putEmail").value.trim()
+            let ImageURL = document.querySelector("#putImageURL").value
+
+            let updatedData={id,name,email,ImageURL}
+
+            async function putData() {
+                const response = await fetch(`http://localhost:3000/users/${id}`,{
+                    method:"PUT",
+                    headers:{"content-type":"application/json"},
+                    body:JSON.stringify(updatedData)
+                })
+            }
+
+            putData()
+        })
+
+
+        // Data DELETE
+        function deleteData(){
+            let id = document.querySelector("#deleteId").value
+            const confirmDelete = confirm(`Delete user id : ${id}`)
+            if(!confirmDelete) return;
+
+            async function deleteId() {
+                const response = await fetch(`http://localhost:3000/users/${id}`,{
+                    method:"DELETE"
+                })
+            }
+            deleteId()
+        }
+
 
     </script>
 </body>
